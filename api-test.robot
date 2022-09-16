@@ -15,7 +15,7 @@ ${BASE_URL}  https://oauth.reddit.com
 &{HEADERS}      user-agent=MyTestScript by For_test_API
 &{USER_DATA}    grant_type=password     username=For_test_API   password=1qaz@WSX
 
-@{TROPHIE}      Verified Email  New User
+@{TROPHIES}=     Verified Email  New User
 
 *** Test Cases ***
 Check Account Identification
@@ -38,6 +38,12 @@ Check Account Trophies
     ${content}=     Get Handler Response Content    api/v1/me/trophies
 
     Dictionary Should Contain Item      ${content}      kind    TrophyList  msg=The title does not match!
+    ${data}=   Get From Dictionary     ${content}      data
+    @{trophies_list}=   Get From Dictionary     ${data}     trophies
+    FOR    ${item}     IN       @{trophies_list}
+        ${trophie_data}=    Get From Dictionary     ${item}     data
+        Should Contain Any     @{TROPHIES}     ${trophie_data}[name]
+    END
 
 *** Keywords ***
 Request OAuth Token
